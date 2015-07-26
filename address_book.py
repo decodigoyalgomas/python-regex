@@ -15,6 +15,15 @@
 # * -> al menos 0 veces
 # + -> al menos una vez
 
+# [] -> define un set
+# [a-z] -> set con rango, vale para minusculas, mayusculas y números
+# [^a-d] -> el techito implica no encontrar esos carateres
+
+# Flags, pasadas como parametro extra
+# | -> permite pasar más flags flags
+# re.IGNORECASE, re.I -> ignora mayusculas y minusculas
+# re.VERBOSE , re.X-> multiple lines
+
 import re
 
 with open("names.txt", encoding="utf-8") as names_file:
@@ -46,6 +55,32 @@ print(re.findall(r'\w+, \w+', data))
 
 # Encuentra también los nombres sin apellido
 print(re.findall(r'\w*, \w+', data))
+
+# Encuentra los emails de manera burda
+# [todos los álpha, los números, los simbolos "+", "-" y "."  ]en varias ocurrencias @ [lo mismo pero sin "-"]
+print(re.findall(r'[-\w\d+.]+@[-\w\d.]+', data))
+
+# Encuentra todas las ocurrencias de la palabra treehouse aunque está este en mayus o minus
+print(re.findall(r'\b[trehous]{9}\b', data, re.I))
+
+# Todos los dominios de email pero sin la extension gov si la encuentra
+print(re.findall(r"""
+	\b@[-\w\d.]*  # Primero un limite de palabra, luego un "@" y por último cualquier cantidad de palabras
+	[^gov\t]+  # Ignora una o mas instancias de las letras "g","o" o "v" y los tabs
+	\b 
+	"""	, data, re.VERBOSE | re.I))
+
+# Nombres y trabajo
+
+print(re.findall(r"""
+	\b[-\w]*, # limite, 1+ guion o caracter y una coma
+	\s # 1 espacio, usamos este ya que re.X ignora los " " que no están en sets
+	[-\w ]+ # 1+ guion y caracter y un espacio explícito
+	[^\t\n] # ignora tabs y nuevas lineas
+"""
+, data, re.X ))
+
+
 
 
 
